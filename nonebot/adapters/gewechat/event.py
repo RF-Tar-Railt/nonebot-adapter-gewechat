@@ -9,7 +9,7 @@ from nonebot.adapters import Event as BaseEvent
 from nonebot.compat import model_dump, type_validate_python, model_validator
 from nonebot.log import logger
 
-from .model import FriendRequestOption, TestMessage, MessageType, TypeName, ImgBuf, AppType, SystemMsgType, FriendRequestData, GroupRequestData
+from .model import AddMessageData, FriendRequestOption, TestMessage, MessageType, TypeName, ImgBuf, AppType, SystemMsgType, FriendRequestData, GroupRequestData
 from .model import Message as RawMessage
 from .message import Message, MessageSegment
 from .utils import remove_prefix_tag, get_sender
@@ -46,9 +46,12 @@ class Event(BaseEvent):
             MetaEvent
         ]
 
-        type = "Test" if isinstance(data, TestMessage) else data.TypeName
-        sub_type = data.Data.MsgType if type == TypeName.AddMsg else None
-
+        if isinstance(data, TestMessage):
+            type = "Test"
+            sub_type = None
+        else:
+            type = data.TypeName
+            sub_type = data.Data.MsgType if type == TypeName.AddMsg and isinstance(data.Data, AddMessageData) else None
 
         event = cls(
             data=model_dump(data),
@@ -80,7 +83,7 @@ class Event(BaseEvent):
     def get_event_description(self) -> str:
         if self.type == TypeName.AddMsg:
             return self.data["Data"]["PushContent"]
-        return "Event"
+        return self.__class__.__name__
 
     @override
     def get_message(self) -> Message:

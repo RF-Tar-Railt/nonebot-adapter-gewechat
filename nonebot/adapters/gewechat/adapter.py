@@ -258,11 +258,10 @@ class Adapter(BaseAdapter):
                 return None
             
         # 过滤自身的消息
-        if not adapter.adapter_config.self_msg and type(raw) == Message:
-            if raw.TypeName in TypeName.AddMsg:
-                if raw.Data.FromUserName.string == adapter.adapter_config.wxid:
-                    return None
-                
+        if not adapter.adapter_config.self_msg and isinstance(raw, Message):
+            if raw.TypeName in TypeName.AddMsg and isinstance(raw.Data, AddMessageData) and raw.Data.FromUserName.string == adapter.adapter_config.wxid:
+                return None
+
         event = Event.parse_event(raw)
         return event
 

@@ -1,6 +1,6 @@
 import re
-from typing import Type, Iterable, TypedDict, TYPE_CHECKING
-from typing_extensions import override, Self
+from typing import Type, Iterable, TypedDict
+from typing_extensions import override
 from dataclasses import dataclass
 from nonebot.adapters import Message as BaseMessage, MessageSegment as BaseMessageSegment
 

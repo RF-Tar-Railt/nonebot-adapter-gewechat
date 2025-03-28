@@ -12,7 +12,7 @@ def resp_json(resp: Response) -> dict:
     """
     将Response对象转换为JSON格式
     """
-    return json.loads(resp.content.decode("utf-8"))
+    return json.loads(resp.content.decode("utf-8"))  # type: ignore
 
 def get_sender(xml: str) -> str:
     """
